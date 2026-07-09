@@ -1,0 +1,30 @@
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        adj = defaultdict(list)
+        for pre in prerequisites:
+            adj[pre[0]].append(pre[1])
+
+        taken = [0]*numCourses
+        courses = []
+
+        def dfs(c):
+            if taken[c] == 1:
+                return False
+            taken[c] = 1
+            #exploring
+            for n in adj[c]:
+                if taken[n] == 2:
+                    continue
+                if not dfs(n):
+                    return False
+            #takes all prereqs, if cycle return False, then appends this class
+            courses.append(c)
+            taken[c] = 2
+            return True
+        
+        for i in range(numCourses):
+            if taken[i] != 2:
+                if not dfs(i):
+                    return []
+
+        return courses 
